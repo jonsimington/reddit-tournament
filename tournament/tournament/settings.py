@@ -1,6 +1,7 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(BASE_DIR)
 
 SECRET_KEY = 'ta#d2ldqqezmj!1xfos8ktm+rpmf*!4j70++*dk7m7=aqdr-i3'
 
@@ -8,9 +9,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -20,6 +23,11 @@ INSTALLED_APPS = (
     'tournament',
     'tournament.profiles',
     'tournament.home',
+
+    # Django AllAuth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -38,7 +46,9 @@ ROOT_URLCONF = 'tournament.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(PROJECT_DIR, "templates")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
