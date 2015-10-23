@@ -1,0 +1,41 @@
+<div class="navbar navbar-default">
+  <div class="navbar-header">
+    <a href="/" title="Tournaments" class="navbar-brand" rel="home">
+      Tournaments
+    </a>
+    <!-- Helps the navbar collapse when the page shrinks -->
+    <button class="navbar-toggle collapsed">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <!--mve this /div down with other...maybe-->
+  </div>
+  <!-- Everything you want hidden at 940px or less, place within here -->
+  <div class="navbar-collapse collapse">
+    <ul class="nav pull-left navbar-nav">
+      <!-- PUT NAVBAR TABS HERE -->
+    </ul>
+    <ul class="nav pull-right navbar-nav">
+      {% if user.is_authenticated %}
+        <li>
+	  <a href="{{ user.profile.get_absolute_url }}">
+	    <strong>{{ user.username }}</strong>
+	  </a>
+	</li>
+	{% if user.is_staff %}
+          <li>
+	    <a href="/admin/">Admin</a>
+	  </li>
+	{% endif %}
+          <li>
+	    <a href="{% url 'account_logout' %}?next={% url 'home' %}"> Logout</a>
+	  </li>
+      {% else %}
+        <li>
+	  <a href="{% url 'account_login' %}">Login</a>
+	</li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
