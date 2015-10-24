@@ -2,7 +2,12 @@ import os
 from django.contrib import messages
 
 SETTINGS_DIR = os.path.dirname(__file__)
-PROJECT_DIR = os.path.dirname(SETTINGS_DIR)
+BASE_DIR = os.path.dirname(SETTINGS_DIR)
+PROJECT_DIR = os.path.dirname(BASE_DIR)
+
+DEBUG = True
+
+SITE_ID = 1
 
 ##########################################################################
 #
@@ -53,7 +58,6 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'allauth.account.auth_backends.AuthenticationBackend',
-    'guardian.backends.ObjectPermissionBackend',
 )
 ANONYMOUS_USER_ID = -1
 
@@ -92,7 +96,7 @@ MESSAGE_TAGS = {
 #
 ##########################################################################
 
-ALLOWED_HOSTS = ["localhost", "simington.io"]
+ALLOWED_HOSTS = ["localhost", "simington.io", "simington.io.", "127.0.0.1",]
 
 ##########################################################################
 #
@@ -147,6 +151,7 @@ USE_L10N = True
 #
 ##########################################################################
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
@@ -188,7 +193,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
 
             ],
-            # List of callables that know how to import templates from various sources.
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
