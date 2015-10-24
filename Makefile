@@ -11,3 +11,6 @@ clean:
 	find ./ -name *.~ -delete
 	find ./ -name \#*\# -delete
 	find ./ -name \*~ -delete
+
+runserver:
+	python tournament/manage.py runserver
