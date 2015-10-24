@@ -6,10 +6,10 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('tournament.home.urls')),
-    url(r'^', include('tournament.profiles.urls')),
+    url(r'^tournament/', include('tournament.home.urls')),
+    url(r'^tournament/', include('tournament.profiles.urls')),
 
     # Django AllAuth
-    url(r'^accounts/logout/$', logout_then_login),
-    url(r'^accounts/', include('allauth.urls')),
+    url(r'tournament/accounts/logout/$', logout_then_login),
+    url(r'tournament/accounts/', include('allauth.urls')),
 ]
