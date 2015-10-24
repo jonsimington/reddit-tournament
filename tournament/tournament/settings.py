@@ -1,95 +1,262 @@
 import os
+from django.contrib import messages
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJECT_DIR = os.path.dirname(BASE_DIR)
+SETTINGS_DIR = os.path.dirname(__file__)
+PROJECT_DIR = os.path.dirname(SETTINGS_DIR)
 
-SECRET_KEY = 'ta#d2ldqqezmj!1xfos8ktm+rpmf*!4j70++*dk7m7=aqdr-i3'
+##########################################################################
+#
+# Secret settings
+#
+##########################################################################
+# If a secret_settings file isn't defined, open a new one and save a
+# SECRET_KEY in it. Then import it. All passwords and other secret
+# settings should be stored in secret_settings.py. NOT in settings.py
+try:
+    from secret_settings import *
+except ImportError:
+    print "Couldn't find secret_settings file. Creating a new one."
+    secret_settings_loc = os.path.join(SETTINGS_DIR, "secret_settings.py")
+    with open(secret_settings_loc, 'w') as secret_settings:
+        secret_key = ''.join([chr(ord(x) % 90 + 33) for x in os.urandom(40)])
+        secret_settings.write("SECRET_KEY = '''%s'''\n" % secret_key)
+    from secret_settings import *
 
-DEBUG = True
+##########################################################################
+#
+# Administrative settings
+#
+##########################################################################
 
-ALLOWED_HOSTS = []
-
-SITE_ID = 1
-
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.sites',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'tournament',
-    'tournament.profiles',
-    'tournament.home',
-
-    # Django AllAuth
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
 )
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+MANAGERS = ADMINS
+
+
+##########################################################################
+#
+#  Authentication settings
+#
+##########################################################################
+
+# When a user successfully logs in, redirect here by default
+LOGIN_REDIRECT_URL = '/'
+
+# Require that users who are signing up provide an email address
+ACCOUNT_EMAIL_REQUIRED = False 
+
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+
+# Django Guardian settings
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
+ANONYMOUS_USER_ID = -1
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: "/profile/%s/" % u.username,
+}
+
+##########################################################################
+#
+# Crispy settings
+#
+##########################################################################
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+##########################################################################
+#
+# Messages settings
+#
+##########################################################################
+
+# Change the default messgae tags to play nice with Bootstrap
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+
+##########################################################################
+#
+# Connection settings
+#
+##########################################################################
+
+ALLOWED_HOSTS = ["localhost", "simington.io"]
+
+##########################################################################
+#
+# Database settings
+#
+##########################################################################
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': POSTGRES_DB,            # Should be in secret_settings.py
+        'USER': POSTGRES_USER,          # Should be in secret_settings.py
+        'PASSWORD': POSTGRES_PASSWORD,  # Should be in secret_settings.py
+        'HOST': 'localhost'
+    }
+}
+
+# Make every HTTP request an atomic transaction
+ATOMIC_REQUESTS = True
+
+# Add project/fixtures to the list of places where django looks for
+# fixtures to install.
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_DIR, "fixtures"),
 )
 
-ROOT_URLCONF = 'tournament.urls'
+
+##########################################################################
+#
+# Cache settings
+#
+##########################################################################
+
+CACHE_MIDDLEWARE_SECONDS = 5
+CACHE_MIDDLEWARE_KEY_PREFIX = 'web_cache'
+
+##########################################################################
+#
+# Location settings
+#
+##########################################################################
+
+TIME_ZONE = 'America/Chicago'
+LANGUAGE_CODE = 'en-us'
+USE_I18N = False
+USE_L10N = True
+
+
+##########################################################################
+#
+# Static files settings
+#
+##########################################################################
+STATIC_URL = '/static/'
+
+ADMIN_MEDIA_PREFIX = '/static/admin/'
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_DIR, "static"),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+
+##########################################################################
+#
+# Template settings
+#
+##########################################################################
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(PROJECT_DIR, "templates")
+            os.path.join(PROJECT_DIR, "templates"),
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
+            'debug': False,
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+
+                # for django-admin-tools
+                'django.template.context_processors.request',
+
+            ],
+            # List of callables that know how to import templates from various sources.
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'django.template.loaders.eggs.Loader',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'tournament.wsgi.application'
+##########################################################################
+#
+# Middleware settings
+#
+##########################################################################
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+)
 
 
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+##########################################################################
+#
+# URL settings
+#
+##########################################################################
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+ROOT_URLCONF = 'tournament.urls'
+
+##########################################################################
+#
+# Installed apps settings
+#
+##########################################################################
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
+    'django.contrib.contenttypes',
+    'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.staticfiles',
+
+    # Django AllAuth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # django-crispy-forms
+    #'crispy_forms',
+
+    'tournament.home',
+    'tournament.profiles',
+)
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
+##########################################################################
+#
+# Logging settings
+#
+##########################################################################
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
-
-STATIC_URL = '/static/'
+# Check development.py or production.py for specific logging settings.
+LOGGING = None
