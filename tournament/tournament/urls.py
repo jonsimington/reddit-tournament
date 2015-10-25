@@ -5,7 +5,7 @@ from django.contrib.auth.views import logout_then_login
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^tournament/admin/', include(admin.site.urls)),
     url(r'^tournament/', include('tournament.home.urls')),
     url(r'^tournament/', include('tournament.profiles.urls')),
 
