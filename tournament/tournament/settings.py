@@ -3,7 +3,7 @@ from django.contrib import messages
 
 SETTINGS_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.dirname(SETTINGS_DIR)
-PROJECT_DIR = os.path.dirname(BASE_DIR)
+PROJECT_DIR = os.path.join(BASE_DIR, "tournament")
 
 DEBUG = True
 
@@ -150,13 +150,13 @@ USE_L10N = True
 # Static files settings
 #
 ##########################################################################
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_URL = os.path.join(BASE_DIR, "tournament/static/")
+STATIC_ROOT = STATIC_URL
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_DIR, "static"),
+    
 )
 
 STATICFILES_FINDERS = (
