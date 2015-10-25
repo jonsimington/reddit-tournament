@@ -47,7 +47,7 @@ MANAGERS = ADMINS
 ##########################################################################
 
 # When a user successfully logs in, redirect here by default
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/tournament'
 
 # Require that users who are signing up provide an email address
 ACCOUNT_EMAIL_REQUIRED = False 
@@ -249,7 +249,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
 
     # django-crispy-forms
-    #'crispy_forms',
+    'crispy_forms',
 
     'tournament.home',
     'tournament.profiles',
