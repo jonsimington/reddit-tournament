@@ -150,10 +150,10 @@ USE_L10N = True
 # Static files settings
 #
 ##########################################################################
-STATIC_URL = os.path.join(BASE_DIR, "tournament/static/")
-STATIC_ROOT = STATIC_URL
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "tournament/static/")
 
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = '/static'
 
 STATICFILES_DIRS = (
     
@@ -234,6 +234,8 @@ ROOT_URLCONF = 'tournament.urls'
 ##########################################################################
 
 INSTALLED_APPS = (
+    'grappelli',
+
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.admindocs',
