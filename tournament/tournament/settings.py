@@ -117,13 +117,6 @@ DATABASES = {
 # Make every HTTP request an atomic transaction
 ATOMIC_REQUESTS = True
 
-# Add project/fixtures to the list of places where django looks for
-# fixtures to install.
-FIXTURE_DIRS = (
-    os.path.join(PROJECT_DIR, "fixtures"),
-)
-
-
 ##########################################################################
 #
 # Cache settings
@@ -253,6 +246,7 @@ INSTALLED_APPS = (
     # django-crispy-forms
     'crispy_forms',
 
+    'tournament',
     'tournament.home',
     'tournament.profiles',
 )
